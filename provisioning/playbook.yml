@@ -1,0 +1,17 @@
+- hosts: all
+  sudo: yes
+  roles:
+    - role: bennojoy.ntp
+    - role: gpstathis.elasticsearch
+    - role: bennojoy.nginx
+      nginx_http_params:
+        sendfile: "on"
+        access_log: "/var/log/nginx/access.log"
+      nginx_sites:
+      - server:
+          file_name: elasticsearch_proxy
+          listen: 8092
+          location1: {name: /, proxy_pass: "http://127.0.0.1:9200", proxy_read_timeout: 90}
+
+  vars_files:
+    - vars/elasticsearch.yml
